@@ -17,7 +17,7 @@ system_prompt = """
 """
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash-latest",
+    model_name="gemini-1.5-flash",
     system_instruction=system_prompt
 )
 
@@ -43,7 +43,7 @@ if prompt := st.chat_input("Напиши что-нибудь..."):
 
     # Получаем ответ от Gemini
     with st.chat_message("assistant"):
-        with st.spinner("Думаю вскрыть ли твою мать..."):
+        with st.spinner("Думаю..."):
             # Отправляем всю историю чата, чтобы бот всё помнил
             response = model.generate_content(prompt)
             answer = response.text
