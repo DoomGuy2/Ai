@@ -17,7 +17,7 @@ system_prompt = """
 """
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash", # Исправила на актуальную версию (1.5)
+    model_name="gemini-1.5-flash-latest"
     system_instruction=system_prompt
 )
 
