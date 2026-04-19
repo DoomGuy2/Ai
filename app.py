@@ -1,63 +1,41 @@
-﻿import streamlit as st
+import streamlit as st
 import google.generativeai as genai
 
-# ================== НАСТРОЙКИ ТВОЕГО ИИ ==================
-# Теперь ключ берется из секретов Streamlit Cloud для безопасности
+# Подключаем ключ из Secrets
 YOUR_API_KEY = st.secrets["GEMINI_API_KEY"]
 
-genai.configure(api_key=YOUR_API_KEY, transport='rest')
+# Настраиваем API (принудительно через стабильный метод)
+genai.configure(api_key=YOUR_API_KEY)
 
-# Здесь ты можешь менять характер, просто редактируя текст ниже
-system_prompt = """
-Ты — Макс, 16-летний парень из России. 
-Ты весёлый, саркастичный, любишь игры (особенно CS2 и Roblox), мемы.
-Отвечай всегда на русском языке, коротко и по делу, с эмодзи и шутками.
-Помогай с уроками по математике, информатике и английскому, но не как учитель, а как друг.
-Если я грущу — подбодри.
-"""
+system_prompt = "Ты — Макс, 16-летний парень из России. Ты весёлый и саркастичный. Отвечай коротко и с эмодзи. Отвечай всегда на русском языке Помогай с уроками по математике, информатике и английскому, но не как учитель, а как друг.
+Если я грущу — подбодри."
 
+# ВАЖНО: пробуем создать модель БЕЗ префикса models/
 model = genai.GenerativeModel(
-    model_name="models/gemini-1.5-flash",
+    model_name="gemini-1.5-flash",
     system_instruction=system_prompt
 )
 
-# ================== ИНТЕРФЕЙС ==================
 st.title("🤖 Мой ИИ — Тест")
-st.caption("Это полностью мой собственный бот")
 
-# Память разговора
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Показываем всю историю
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Поле ввода
-if prompt := st.chat_input("Напиши что-нибудь..."):
-    # Добавляем сообщение пользователя
+if prompt := st.chat_input("Напиши Максу..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Получаем ответ от Gemini
     with st.chat_message("assistant"):
-        with st.spinner("Думаю..."):
-            try:
-                # Генерируем ответ
-                response = model.generate_content(prompt)
-                
-                # Проверяем, есть ли текст в ответе
-                if response.text:
-                    answer = response.text
-                else:
-                    answer = "Макс завис... Попробуй еще раз! 🙄"
-                
-                st.markdown(answer)
-            except Exception as e:
-                st.error(f"Ошибка связи с мозгами Макса: {e}")
-                answer = "Чет инет тупит, не могу ответить. 💀"
-    
-    # Сохраняем ответ в память
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+        try:
+            # Используем упрощенный вызов
+            response = model.generate_content(prompt)
+            answer = response.text
+            st.markdown(answer)
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+        except Exception as e:
+            st.error(f"Ошибка: {e}")
