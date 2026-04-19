@@ -44,10 +44,20 @@ if prompt := st.chat_input("Напиши что-нибудь..."):
     # Получаем ответ от Gemini
     with st.chat_message("assistant"):
         with st.spinner("Думаю..."):
-            # Отправляем всю историю чата, чтобы бот всё помнил
-            response = model.generate_content(prompt)
-            answer = response.text
-            st.markdown(answer)
+            try:
+                # Генерируем ответ
+                response = model.generate_content(prompt)
+                
+                # Проверяем, есть ли текст в ответе
+                if response.text:
+                    answer = response.text
+                else:
+                    answer = "Макс завис... Попробуй еще раз! 🙄"
+                
+                st.markdown(answer)
+            except Exception as e:
+                st.error(f"Ошибка связи с мозгами Макса: {e}")
+                answer = "Чет инет тупит, не могу ответить. 💀"
     
     # Сохраняем ответ в память
     st.session_state.messages.append({"role": "assistant", "content": answer})
