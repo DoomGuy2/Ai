@@ -15,7 +15,7 @@ system_prompt = """
 
 # Инициализируем модель (БЕЗ слова "models/")
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="models/gemini-1.5-flash",
     system_instruction=system_prompt
 )
 
