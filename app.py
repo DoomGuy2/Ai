@@ -1,35 +1,35 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Получаем ключ из секретов
+# 1. Ключ из секретов
 YOUR_API_KEY = st.secrets["GEMINI_API_KEY"]
-
-# Настраиваем API
 genai.configure(api_key=YOUR_API_KEY)
-# Создаем инструкцию для Макса (используем тройные кавычки!)
+
+# 2. Настройка Макса
 system_prompt = """
 Ты — Макс, 16-летний парень из России. 
 Ты весёлый и саркастичный. Отвечай всегда на русском языке, коротко и с эмодзи. 
 Помогай с уроками как друг, а не как учитель.
 """
 
-# Инициализируем модель (БЕЗ слова "models/")
+# 3. Создание модели
 model = genai.GenerativeModel(
-    model_name="models/gemini-1.5-flash",
+    model_name="gemini-1.5-flash",
     system_instruction=system_prompt
 )
 
 st.title("🤖 Мой ИИ — Макс")
 
+# Память чата
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Отображение истории
+# Показываем старые сообщения
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Поле ввода
+# 4. Поле ввода и логика ответа
 if prompt := st.chat_input("Напиши Максу..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -37,14 +37,17 @@ if prompt := st.chat_input("Напиши Максу..."):
 
     with st.chat_message("assistant"):
         try:
-            # Прямой вызов генерации
-            response = model.generate_content(prompt)
+            # ВОТ ОН - ГЛАВНЫЙ ФИКС ЗДЕСЬ:
+            response = model.generate_content(
+                prompt, 
+                request_options={"version": "v1"}
+            )
             
             if response.text:
                 answer = response.text
                 st.markdown(answer)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
             else:
-                st.error("Макс промолчал... Попробуй еще раз.")
+                st.error("Макс чёт приуныл и молчит...")
         except Exception as e:
-            st.error(f"Ошибка: {e}")
+            st.error(f"Ошибка связи: {e}")
