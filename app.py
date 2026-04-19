@@ -5,7 +5,7 @@ import google.generativeai as genai
 # Теперь ключ берется из секретов Streamlit Cloud для безопасности
 YOUR_API_KEY = st.secrets["GEMINI_API_KEY"]
 
-genai.configure(api_key=AIzaSyBxaiuUujnV0hZQ8igKHGEZXTPInzEP0gQ)
+genai.configure(api_key=YOUR_API_KEY)
 
 # Здесь ты можешь менять характер, просто редактируя текст ниже
 system_prompt = """
