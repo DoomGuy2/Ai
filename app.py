@@ -7,7 +7,9 @@ genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 st.title("🤖 Макс: Тест связи")
 
 # Упрощаем модель до предела
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel(
+    model_name="gemini-1.0-pro"
+)
 
 if prompt := st.chat_input("Напиши привет"):
     st.chat_message("user").markdown(prompt)
