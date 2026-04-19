@@ -14,7 +14,7 @@ system_prompt = """
 
 # 3. Создание модели (используем только проверенные аргументы)
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-1.5-pro", 
     system_instruction=system_prompt
 )
 
