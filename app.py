@@ -6,7 +6,6 @@ YOUR_API_KEY = st.secrets["GEMINI_API_KEY"]
 
 # Настраиваем API
 genai.configure(api_key=YOUR_API_KEY)
-
 # Создаем инструкцию для Макса (используем тройные кавычки!)
 system_prompt = """
 Ты — Макс, 16-летний парень из России. 
